@@ -1,14 +1,23 @@
-const mongoose = require('mongoose');
-mongoose.Promise = Promise;
-const db = mongoose.connection;
+const mongoose = require('./base');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
-db.on('open', () => { console.log('Successful connection to MongoDB')});
-mongoose.connect('mongodb://localhost/movies'); //default port
+const CommentSchema = Schema({
+  body: String
+})
 
-const movieSchema = mongoose.Schema({
+const person = {
+  type: ObjectId, ref: 'Person'
+}
+
+const movieSchema = Schema({
   title: String,
   yearReleased: Number,
-  star: String
+  star: String,
+  comments: [CommentSchema],
+  director: { type: ObjectId, ref: 'Person' },
+  cast: [{ actor: person, character: person }],
+  crew: [{ person: person, role: String }]
 });
 
 const Movie = mongoose.model('Movie', movieSchema);

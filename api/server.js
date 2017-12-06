@@ -8,6 +8,7 @@ const server = express();
 const moviesRouter = require('./routes/movies');
 
 server.use(bodyParser.json());
+server.use(bodyParser.urlencoded());
 server.use('/movies', moviesRouter);
 
 server.get('/', (req, res) => {
