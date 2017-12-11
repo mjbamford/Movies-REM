@@ -4,7 +4,15 @@ const Person = require('../models/person');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+const authorize = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.status(403).end();
+  }
+}
+
+router.get('/', authorize, (req, res) => {
   Movie.find()
     .populate('director')
     .populate('crew.person')
