@@ -6,17 +6,13 @@ const router = express.Router();
 // Register a new user
 router.post('/register',
   authMiddleware.register,
-  (req, res) => {
-    res.json({ user: req.user })
-  }
+  authMiddleware.signJWTForUser
 );
 
 // Sign in a user
 router.post('/signin',
   authMiddleware.signIn,
-  (req, res) => {
-    res.json({ user: req.user })
-  }
+  authMiddleware.signJWTForUser
 );
 
 router.get('/movies',
