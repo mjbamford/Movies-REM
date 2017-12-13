@@ -140,18 +140,126 @@
     but when you comment out the `moviesAPI.all() ...` call in 
     `componentDidMount()` then it works, so it's due to the `fetch`
 
+    * Fixed later by adding:
+      ```
+      beforeEach(function() {
+        window.fetch = jest.fn().mockImplementation(() => Promise.resolve({token: 'myjwt'}));
+      });
+      ```
+
   * Error using Jest version of App.test.js:
     ```
     console.log src/api/movies.js:7
       TypeError: Network request failed
       ...
     ```
+
+  * Error `console.log src/api/movies.js:7 TypeError: res.json is not a function`
+    when change to:
+    ```
+    describe("Movie component with API call", function () {
+      beforeEach(function() {
+        window.fetch = jest.fn().mockImplementation(() => Promise.resolve({token: 'abc'}));
+      });
+
+      it('renders without crashing', () => {
+        const div = document.createElement('div');
+        ReactDOM.render(<App />, div);
+      });
+    });
+    ```
+
+  * Try to resolve by Stubbing the relevant App Component dependencies using Proxyquire
+    * References:
+      * https://www.npmjs.com/package/proxyquire
+      * https://github.com/tomitrescak/proxyrequire
+
+    * Install
+      ```
+      yarn add proxyquire --dev
+      ```
+
+    * Try adding to App.test.js
+      ```
+      const proxyquire =  require('proxyquire')
+      const assert     =  require('assert')
+      const pathStub   =  { };
+
+      const moviesAPI = proxyquire('./api/movies', { 
+        'path': pathStub 
+      });
+      // assert.equal(moviesAPI.all(), 'myjwt');
+
+      it('calls the mock moviesAPI.all() function', () => {
+        jest.mock('./api/movies');
+        const allMockFunction = jest.fn().mockName('allMockFunction')
+        App.mockImplementation(() => {
+          return {
+            all: allMockFunction
+          }
+        })
+        
+        const app = new App();
+        app.all();
+        expect(allMockFunction).toHaveBeenCalled();
+      });
+      ```
+
+    * Error encountered due to Proxyquire `TypeError: Cannot read property 'bind' of undefined`. 
+    Discovered that Jest and Proxyquire are incompatible https://github.com/thlorenz/proxyquire/issues/152
   
-* Challenge
+  * Try instead Stubbing the App Component dependencies using a Jest Manual Mock
+    * Reference: Async Example http://facebook.github.io/jest/docs/en/tutorial-async.html#content
+    * Reference: Manual Mocks http://facebook.github.io/jest/docs/en/manual-mocks.html#content
+
+    * Create folder 
+      ```
+      mkdir -p src/__mocks__ && touch src/__mocks__/movies.js
+      ```
+
+    * Add to the Jest Manual Mock file in src/__mocks__/movies.js
+      ```
+      const resMock = {
+        token: 'mytoken'
+      };
+
+      export default function getMovies() {
+        return new Promise((resolve, reject) => {
+          process.nextTick(
+            () =>
+              resMock[token]
+                ? resolve(resMock[token])
+                : reject({
+                    error: 'Error: token not found in mock response'
+                  })
+          );
+        });
+      }
+      ```
+      
+    * Add to App.test.js
+      ```
+      // Jest Mock Function
+      jest.mock('movies'); // src/__mocks__/movies.js
+
+      // Assertion for a promise must be returned.
+      it('works with promises on mock functions', () => {
+        expect.assertions(1);
+        return App.getMovies().then(data => expect(data.token).toEqual('mytoken'));
+      });
+      ```
+
+    * Outcome:
+      * Error not resolved, still get error `console.log src/api/movies.js:7 TypeError: res.json is not a function`
+      * Additional error: `Expected one assertion to be called but only received zero assertion calls.`
+  
+* Challenges
   * Fix the error by implementing the Jest Mock Function API - https://facebook.github.io/jest/docs/en/mock-function-api.html
   * Run tests with Coverage Reporting
     * Reference - https://github.com/ltfschoen/Movies-REM/blob/master/react-web/README.md#coverage-reporting
   * Jest for shallow rendering and testing the output
   * Jest for full rendering, testing component lifecycle and state changes
+  * Jest Snapshots experimentation
   * Setup Travis CI Configuration 
     * Reference - https://github.com/ltfschoen/Movies-REM/blob/master/react-web/README.md#on-ci-servers
+
