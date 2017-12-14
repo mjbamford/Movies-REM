@@ -9,7 +9,7 @@ const UserSchema = mongoose.Schema({
 UserSchema.plugin(passportLocalMongoose, {
   usernameField: 'email',
   usernameLowerCase: true,
-  session: true
+  session: false
 });
 
 const User = mongoose.models.User || mongoose.model('User', UserSchema);

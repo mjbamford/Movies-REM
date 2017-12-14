@@ -20,7 +20,13 @@ Content-Type: application/json
 }
 
 
-### Protected Movies
+### Protected Movies with a cookie
 GET http://localhost:7000/movies
 Content-Type: application/json
 Cookie: connect.sid=xs%3AkLenLsMVcm1hfEeSx0ewa35vPnUt3SOm.QnZRfdhQF%2FP%2Bnd57rPQziA2lkpGIsfQw2kJf4wyVPxA;
+
+
+### Protected Movies with a bearer token
+GET http://localhost:7000/movies
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uYnJvd25AZXhhbXBsZS5jb20iLCJpYXQiOjE1MTMxMjg5NDIsImV4cCI6MTUxMzczMzc0Miwic3ViIjoiNWEzMDdhZmY3YjQzNWExMTI2MTNmYmY4In0.fqYU6zVogosJWGBtsaUtaYrm5axTBZevz9fg_zyozAk
