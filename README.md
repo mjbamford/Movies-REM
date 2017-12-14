@@ -66,6 +66,7 @@
           * Option 1: `sinon.sandbox.create`
           * Option 2: `sinon.test()`
     * Jasmine BDD framework - https://jasmine.github.io/ 
+    * Chimp.js (normally QA teams do this) - https://chimp.readme.io/
 
 * About
 
@@ -118,6 +119,8 @@
       yarn test
       ```
 
+  * Create a new branch to experiment with tests `git checkout -b branch-name`
+
 * Jest Usage
   * Reference: https://github.com/ltfschoen/Movies-REM/blob/master/react-web/README.md#running-tests
 
@@ -154,7 +157,7 @@
   * Initialise Test Environment
     * Reference: https://github.com/ltfschoen/Movies-REM/blob/master/react-web/README.md#initializing-test-environment
 
-    * Create `src/setupTests.js` as it will automatically run before running tests
+    * Create `src/setupTests.js` as it will automatically run before running tests. Configure Enzyme to use the Adapter
     
       ```
       import { configure } from 'enzyme';
@@ -169,6 +172,8 @@
       };
       global.localStorage = localStorageMock;
       ```
+
+    * Shallow Rendering with Enzyme - http://airbnb.io/enzyme/#shallow-rendering
 
     * Change App.test.js to:
       ```
@@ -185,15 +190,7 @@
       * Global setup before running tests
       * If requirement to Mock an API 
 
-  * Configure Enzyme to use the Adapter
-    ```
-    import Enzyme from 'enzyme';
-    import Adapter from 'enzyme-adapter-react-16';
-
-    Enzyme.configure({ adapter: new Adapter() });
-    ```
-
-* Basic Jest "smoke test"
+* Basic Jest "smoke test" - https://github.com/ltfschoen/Movies-REM/blob/master/react-web/README.md#srcsetuptestsjs
 
   * In-built with create-react-app to test component renders without throwing during rendering
   * Open src > components > App.test.js
@@ -320,13 +317,30 @@
       * Error not resolved, still get error `console.log src/api/movies.js:7 TypeError: res.json is not a function`
       * Additional error: `Expected one assertion to be called but only received zero assertion calls.`
   
+  * Add Chai
+    ```
+    yarn add chai sinon --dev
+    ```
+    * Usage
+      ```
+      import { assert } from 'chai';
+      import { spy } from 'sinon';
+      ```
+    * Reference: 
+      * https://medium.com/kevin-salters-blog/testing-react-with-enzyme-fbfc30190e70
+      * http://airbnb.io/enzyme/docs/api/ReactWrapper/find.html
+
+  * Debugging tests: `console.log( wrapper.debug() )`
+
 * Challenges
   * Fix the error by implementing the Jest Mock Function API - https://facebook.github.io/jest/docs/en/mock-function-api.html
   * Run tests with Coverage Reporting
     * Reference - https://github.com/ltfschoen/Movies-REM/blob/master/react-web/README.md#coverage-reporting
-  * Jest for shallow rendering and testing the output
-  * Jest for full rendering, testing component lifecycle and state changes
-  * Jest Snapshots experimentation
-  * Setup Travis CI Configuration 
+
+* Homework
+  * Read about using Jest for shallow rendering and testing the output
+  * Read about using Jest for full rendering, testing component lifecycle and state changes
+  * Try experimenting with Jest Snapshots between your Git commits
+  * Trying setting up Travis CI Configuration with your Jest tests
     * Reference - https://github.com/ltfschoen/Movies-REM/blob/master/react-web/README.md#on-ci-servers
 
