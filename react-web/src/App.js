@@ -3,12 +3,20 @@ import './App.css';
 import MoviesList from './components/MovieList'
 import MovieForm from './components/MovieForm'
 import * as moviesAPI from './api/movies'
+
+export function getMovies() {
+  return moviesAPI.all()
+    .then(movies => {
+      movies
+    })
+}
+
 class App extends Component {
   state = { movies: null }
 
   componentDidMount() {
-    moviesAPI.all()
-      .then(movies => {
+    getMovies()
+      .then((movies) => {
         this.setState({ movies })
       })
   }
