@@ -21,11 +21,10 @@ class App extends Component {
   }
 
   handleMovieSubmission = (movie) => {
+    moviesAPI.save(movie);
     this.setState(({ movies }) => (
       { movies: [movie].concat(movies) }
     ));
-
-    moviesAPI.save(movie);
   }
 
   render() {
@@ -36,28 +35,25 @@ class App extends Component {
           <nav>
             <Link to='/about'>About</Link>
             &nbsp;
-            <Link to='/'>Movies</Link>
+            <Link to='/movies'>Movies</Link>
+            &nbsp;
+            <Link to='/movies/new'>Create</Link>
           </nav>
           <hr/>
           <Switch>
             <Route path='/about' component={AboutPage} />
-            <Route path='/' render={
-              () => (
-                <div>
-                  <MovieForm onSubmit={this.handleMovieSubmission} />
-                  <hr />
-                  {
-                    movies ? (
-                        <MoviesList movies={movies} />
-                      ) : (
-                        "Loading..."
-                      )
-                  }
-                </div>
+            <Route path='/movies/new' render={(routeProps) => ( 
+                <MovieForm onSubmit={ this.handleMovieSubmission }/>
               )
             }/>
+            <Route path='/movies' render={(routeProps) => (
+              !!movies ? (
+                <MoviesList {...routeProps} movies={movies} />
+              ) : (
+                "Loading..."
+              )
+            )}/>
           </Switch>
-
         </div>
       </Router>
     );
