@@ -6,9 +6,9 @@ import {
   Switch
 } from 'react-router-dom'
 import './App.css';
-import MoviesList from './components/MovieList'
-import MovieForm from './components/MovieForm'
 import AboutPage from './pages/AboutPage'
+import MoviesPage from './pages/MoviesPage'
+import MovieForm from './components/MovieForm'
 import * as moviesAPI from './api/movies'
 class App extends Component {
   state = { movies: null }
@@ -42,17 +42,14 @@ class App extends Component {
           <hr/>
           <Switch>
             <Route path='/about' component={AboutPage} />
-            <Route path='/movies/new' render={(routeProps) => ( 
+            <Route path='/movies/new' render={() => ( 
                 <MovieForm onSubmit={ this.handleMovieSubmission }/>
               )
             }/>
-            <Route path='/movies' render={(routeProps) => (
-              !!movies ? (
-                <MoviesList {...routeProps} movies={movies} />
-              ) : (
-                "Loading..."
+            <Route path='/movies' render={() => (
+                <MoviesPage movies={movies}/>
               )
-            )}/>
+            }/>
           </Switch>
         </div>
       </Router>

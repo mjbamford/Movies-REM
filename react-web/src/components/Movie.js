@@ -1,15 +1,19 @@
 import React from 'react';
 import Comment from './Comment'
+import { Link } from 'react-router-dom'
 
-export default function Movie(props)
- {
-  const { title, yearReleased, director, comments } = props;
+export default function Movie(props) {
+  const { _id, title, yearReleased, director, comments } = props;
   return (
     <div className="movie">
       <span>
-        Title: {title}
+        Title:
+        &nbsp;
+        <Link to={`/movies/${_id}`}>
+          {title}
+        </Link>
       </span>
-      <span>Year: {yearReleased}</span>
+      <span><small>({yearReleased})</small></span>
       { director && <span>Director: {director.firstName} {director.lastName}</span> }
       <div>
         {
