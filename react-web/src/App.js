@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch
+} from 'react-router-dom'
 import './App.css';
 import MoviesList from './components/MovieList'
 import MovieForm from './components/MovieForm'
+import AboutPage from './pages/AboutPage'
 import * as moviesAPI from './api/movies'
 class App extends Component {
   state = { movies: null }
@@ -15,7 +22,7 @@ class App extends Component {
 
   handleMovieSubmission = (movie) => {
     this.setState(({ movies }) => (
-      { movies: [ movie ].concat(movies) }
+      { movies: [movie].concat(movies) }
     ));
 
     moviesAPI.save(movie);
@@ -24,17 +31,35 @@ class App extends Component {
   render() {
     const { movies } = this.state;
     return (
-      <div className="App">
-        <MovieForm onSubmit={this.handleMovieSubmission} />
-        <hr/>
-        {
-          movies ? (
-            <MoviesList movies={ movies } />
-          ) : (
-            "Loading..."
-          )
-        }
-      </div>
+      <Router>
+        <div className="App">
+          <nav>
+            <Link to='/about'>About</Link>
+            &nbsp;
+            <Link to='/'>Movies</Link>
+          </nav>
+          <hr/>
+          <Switch>
+            <Route path='/about' component={AboutPage} />
+            <Route path='/' render={
+              () => (
+                <div>
+                  <MovieForm onSubmit={this.handleMovieSubmission} />
+                  <hr />
+                  {
+                    movies ? (
+                        <MoviesList movies={movies} />
+                      ) : (
+                        "Loading..."
+                      )
+                  }
+                </div>
+              )
+            }/>
+          </Switch>
+
+        </div>
+      </Router>
     );
   }
 }
