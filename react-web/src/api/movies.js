@@ -1,9 +1,10 @@
+const MOVIES_API_URL=`${process.env.REACT_APP_API_URL}/movies`
+
 export function all() {
-  return fetch('/movies', {
+  return fetch(MOVIES_API_URL, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uYnJvd25AZXhhbXBsZS5jb20iLCJpYXQiOjE1MTMxMjg5NDIsImV4cCI6MTUxMzczMzc0Miwic3ViIjoiNWEzMDdhZmY3YjQzNWExMTI2MTNmYmY4In0.fqYU6zVogosJWGBtsaUtaYrm5axTBZevz9fg_zyozAk'
+        'Content-Type': 'application/json'
       }
     })
     .then(res => res.json())
@@ -11,11 +12,10 @@ export function all() {
 }
 
 export function save(movie) {
-  return fetch('/movies', {
+  return fetch(MOVIES_API_URL, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uYnJvd25AZXhhbXBsZS5jb20iLCJpYXQiOjE1MTMxMjg5NDIsImV4cCI6MTUxMzczMzc0Miwic3ViIjoiNWEzMDdhZmY3YjQzNWExMTI2MTNmYmY4In0.fqYU6zVogosJWGBtsaUtaYrm5axTBZevz9fg_zyozAk'
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(movie)
   })
