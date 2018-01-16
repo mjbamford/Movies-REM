@@ -15,11 +15,4 @@ router.post('/signin',
   authMiddleware.signJWTForUser
 );
 
-router.get('/movies',
-  authMiddleware.signIn,
-  (req, res) => {
-    res.send({ movies: [ 'Movies!' ]})
-  }
-);
-
 module.exports = router;

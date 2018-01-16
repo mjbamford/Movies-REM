@@ -1,7 +1,7 @@
 const express = require('express');
 const Movie = require('../models/movie');
 const Person = require('../models/person');
-const authMiddleware = require('../middleware/auth');
+const authMiddleware =require('../middleware/auth');
 
 const router = express.Router();
 
@@ -14,8 +14,7 @@ const router = express.Router();
 //   }
 // }
 
-// router.get('/', authMiddleware.requireJWT, (req, res) => {
-router.get('/', (req, res) => {
+router.get('/', authMiddleware.requireJWT, (req, res) => {
   Movie.find()
     .populate('director')
     .populate('crew.person')
