@@ -24,7 +24,7 @@ router.get('/', authMiddleware.requireJWT, (req, res) => {
     .catch(error => res.json({ error }))
 });
 
-router.post('/', (req, res) => {
+router.post('/', authMiddleware.requireJWT, (req, res) => {
   Movie.create(req.body)
     .then((movie) => {
       res.status(201).json(movie).end();

@@ -11,12 +11,13 @@ import AboutPage from './pages/AboutPage'
 import MoviesPage from './pages/MoviesPage'
 import MovieForm from './components/MovieForm'
 import SignInForm from './components/SignInForm'
+import SignOutForm from './components/SignOutForm'
 
 import * as moviesAPI from './api/movies'
-import { signIn } from './api/auth'
+import * as auth from './api/auth'
 
 class App extends Component {
-  state = { movies: null, token: null }
+  state = { movies: null }
 
   componentDidMount() {
     moviesAPI.all()
@@ -38,15 +39,19 @@ class App extends Component {
     const elements = form.elements
     const email = elements.email.value
     const password = elements.password.value
-    signIn({ email, password })
-      .then(({ token }) => {
-        if (token) {
-          moviesAPI.all(token)
-            .then(movies => {
-              this.setState({ movies, token })
-            })
-        }
-      })
+    auth.signIn({ email, password })
+      .then(() => (
+        moviesAPI.all()
+          .then(movies => {
+            this.setState({ movies })
+          })
+        )
+      )
+  }
+
+  handleSignOut = () => {
+    auth.signOut()
+    this.setState({ movies: null })
   }
 
   render() {
@@ -78,14 +83,13 @@ class App extends Component {
             }/>
             <Route path='/signin' render={() => (
               <div>
-                { this.state.token && <Redirect to='/movies'/> }
+                { auth.isSignedIn() && <Redirect to='/movies'/> }
                 <SignInForm onSignIn={ this.handleSignIn }/>
               </div>
             )}/>
-            <Route path='/signout' render={() => {
-              this.setState({ movies: null, token: null })
-              return (<Redirect to='/signin' />)
-            }}/>
+            <Route path='/signout' render={() => (
+              <SignOutForm onSignOut={ this.handleSignOut }/>
+            )}/>
           </Switch>
         </div>
       </Router>

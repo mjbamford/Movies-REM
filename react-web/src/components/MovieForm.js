@@ -6,23 +6,6 @@ class MovieForm extends React.Component {
 
   state = { redirect: false }
 
-  componentWillMount(nextProps) {
-    console.log("componentWillMount")
-  }
-  
-  componentDidMount(nextProps) {
-    console.log("componentDidMount")
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log("componentWillReceiveProps")
-    // console.log(nextProps)
-  }
-  
-  componentWillUnmount() {
-    console.log("componentWillUnmount")
-  }
-  
   handleFormSubmission = (event) => {
     event.preventDefault();
     const { elements } = event.target;
