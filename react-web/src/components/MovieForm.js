@@ -1,18 +1,40 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom'
+import isAlphanumeric from 'validator/lib/isAlphanumeric'
 
 class MovieForm extends React.Component {
-  // export default function MovieForm({ onSubmit, redirect }) {
+  state = {
+    redirect: false,
+    movie: {},
+    errors: {}
+  }
 
-  state = { redirect: false }
+  validate = (movie) => {
+    const errors = {}
+    if (!movie.title) errors.title = "Title is required"
+    if (movie && !isAlphanumeric(movie.title)) errors.title = "Invalid title"
+    if (!movie.yearReleased) errors.yearReleased = "Year Released is required"
+    if (!(movie.title || movie.yearReleased)) errors.base = ' Please fill out the form'
+    return errors
+  }
 
   handleFormSubmission = (event) => {
     event.preventDefault();
-    const { elements } = event.target;
-    const title = elements["title"].value;
-    const yearReleased = elements["yearReleased"].value;
+    const errors = this.validate(this.state.movie)
+    this.setState({ errors })
+
+    if (Object.keys(errors).length > 0) return;
+
     this.setState({ redirect: true })
-    this.props.onSubmit({ title, yearReleased });
+    this.props.onSubmit(this.state.movie);
+  }
+
+  handleInputChange = (event) => {
+    const attr = event.target.name
+    const value = event.target.value
+    const movie = this.state.movie
+    movie[attr] = value
+    this.setState({ movie })
   }
 
   render() {
@@ -24,16 +46,19 @@ class MovieForm extends React.Component {
           <label>
             Title
             &nbsp;
-            <input type="text" name="title"/>
+            <input onChange={ this.handleInputChange } type="text" name="title"/>
+            <span className="error">{ this.state.errors.title }</span>
           </label>
           &nbsp;
           <label>
             Year
             &nbsp;
-            <input type="number" name="yearReleased"/>
+            <input onChange={ this.handleInputChange } type="number" name="yearReleased"/>
+            <span className="error">{ this.state.errors.yearReleased }</span>
           </label>
           &nbsp;
           <button type="submit">Create Movie! &hearts;</button>
+          <span className="error">{ this.state.errors.base }</span>
         </form>
       </div>
     )
