@@ -12,7 +12,7 @@ class MovieForm extends React.Component {
   validate = (movie) => {
     const errors = {}
     if (!movie.title) errors.title = "Title is required"
-    if (movie && !isAlphanumeric(movie.title)) errors.title = "Invalid title"
+    if (movie.title && !isAlphanumeric(movie.title)) errors.title = "Invalid title"
     if (!movie.yearReleased) errors.yearReleased = "Year Released is required"
     if (!(movie.title || movie.yearReleased)) errors.base = ' Please fill out the form'
     return errors
@@ -29,12 +29,18 @@ class MovieForm extends React.Component {
     this.props.onSubmit(this.state.movie);
   }
 
-  handleInputChange = (event) => {
+  handleInputChange = (event, validate) => {
     const attr = event.target.name
     const value = event.target.value
     const movie = this.state.movie
+    const errors = this.state.errors
     movie[attr] = value
-    this.setState({ movie })
+    errors[attr] = validate(value)
+    this.setState({ movie, errors })
+  }
+
+  static validators = {
+    alphanumeric: (value) => (!value || isAlphanumeric(value)) ? null : 'Wrong!'
   }
 
   render() {
@@ -46,7 +52,13 @@ class MovieForm extends React.Component {
           <label>
             Title
             &nbsp;
-            <input onChange={ this.handleInputChange } type="text" name="title"/>
+            <input
+              onChange={(event) => (
+                this.handleInputChange(event, this.constructor.validators.alphanumeric)
+              )}
+              type="text"
+              name="title"
+            />
             <span className="error">{ this.state.errors.title }</span>
           </label>
           &nbsp;
